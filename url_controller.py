@@ -29,7 +29,7 @@ class UrlControl(object):
         :return:
         '''
         new_url=self.__new_urls.pop()
-        self.__old_urls.add(new_url)
+        # self.__old_urls.add(new_url)
         return new_url
 
     def add_new_urls(self, new_urls):
