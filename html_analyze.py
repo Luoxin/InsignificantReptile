@@ -30,7 +30,7 @@ class HtmlParser(object):
                     'removed_keywords': [''],   # 存在则删除，和reserved_keywords只能存在一个
                 }
                 'binary':True,  # 需要对byte类型转换
-                'reorganization',  # 重组
+                'reorganization':[],  # 重组
                 "ChineseGarbled":True,  # 解决中文乱码的问题
             }
         :return: 解析结果的字典
@@ -52,6 +52,7 @@ class HtmlParser(object):
 
             soup = etree.HTML(html_content)
             result = self._paser_xpath_main(soup,xpath_dict)
+
 
             if 'reorganization' in xpath_dict:
                result = self.list_to_dict(result, xpath_dict)
@@ -78,14 +79,15 @@ class HtmlParser(object):
         pat = re.compile(r'(\\x[0-9a-fA-F][0-9a-fA-F])+')
         return re.sub(pat, ti, data)
 
-    def list_to_dict(self, result, xpath_dict):
+    def list_to_dict(self, result, xpath_dict):  # 把列表变成字典
         sgin = True
+        # print(result)
         for __, val in enumerate(xpath_dict['reorganization']):  # 判断是否存在非法的字典
             if val not in result.keys():
                 sgin = False
                 break
         if sgin:
-            val_len = result[xpath_dict['reorganization'][0]].__len__()
+            val_len = result[xpath_dict['reorganization'][0]].__len__()  # 判断长度是否一样
             for __, val in enumerate(xpath_dict['reorganization']):
                 if result[val].__len__() is not val_len:
                     sgin = False
@@ -93,7 +95,7 @@ class HtmlParser(object):
 
         if sgin:
             temp_result = []
-            for index in range(val_len):
+            for index in range(val_len):  # 重新组合
                 temp_dict = dict()
                 for __, val in enumerate(xpath_dict['reorganization']):
                     temp_dict[val] = result[val][index]
@@ -129,6 +131,7 @@ class HtmlParser(object):
                     result.append(urljoin(val["base_url"], url))
 
             elif "xpath" in val :  # 不需要处理的
+                # print(key, val["xpath"])
                 result = soup.xpath(val["xpath"])
                 # print(result)
 

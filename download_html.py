@@ -67,9 +67,11 @@ class HtmlDownloader:
         except :
             return None
 
-    def download_post_json(self,url,post_dict):
+    def download_post_json(self, url, post_dict):
         return requests.post(url, data=post_dict).json()
 
+    def download_post_html(self, url, post_dict):
+        pass
 
     def download_file(self,url, fileName):
         '''
